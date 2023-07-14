@@ -1,0 +1,44 @@
+# Jupyter Notebook files
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Python bytecode files
+__pycache__/
+*.pyc
+
+# Virtual environment files
+venv/
+scraper/
+env/
+ENV/
+
+# Log files
+*.log
+
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Data files
+data/
+.bin
+.vec
+# *.csv
+# *.json
+# *.xlsx
+# *.xls
+
+# Other generated files
+*.bak
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+CNN-LSTM-Model/
