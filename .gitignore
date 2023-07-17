@@ -28,7 +28,7 @@ ENV/
 
 # Data files
 data/
-.bin
+wiki.en.bin
 wiki.en.vec
 # *.csv
 # *.json
