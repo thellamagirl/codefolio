@@ -75,10 +75,9 @@ The data used in this project was provided as part of a course taken at Western 
 
 Kotzias, D., Denil, M., De Freitas, N., & Smyth, P. (2015). From Group to Individual Labels using Deep Features. In Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining.
 
-From the readme.txt from the data file:
-=======
-Dataset Details:
-=======
+### From the readme.txt from the data file:
+
+### Dataset Details:
 Score is either 1 (for positive) or 0 (for negative)	
 The sentences come from three different websites/fields:
 
