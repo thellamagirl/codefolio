@@ -60,7 +60,9 @@ CNN-LSTM Neural Network: A deep learning model consisting of convolutional neura
 
 ## Configuration
 
-This project does not require any additional configuration files or settings, however, if you wish to run the project in Jupyter Notebook it will need to be installed in advance. Visit https://www.anaconda.com/download to begin.
+This project utilizes pre-trained word embeddings from the FastText corpora. This will need to be downloaded prior to running the notebook. You can find it here: https://fasttext.cc/
+
+If you wish to run the project in Jupyter Notebook it will need to be installed in advance. Visit https://www.anaconda.com/download to begin.
 
 ## Contributing
 
