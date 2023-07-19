@@ -30,6 +30,7 @@ ENV/
 data/
 wiki.en.bin
 wiki.en.vec
+*.hdf5
 # *.csv
 # *.json
 # *.xlsx
