@@ -43,3 +43,6 @@ wiki.en.vec
 *.DS_Store
 Thumbs.db
 CNN-LSTM-Model/
+
+# Private files
+private.py
