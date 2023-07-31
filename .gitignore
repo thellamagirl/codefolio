@@ -35,6 +35,8 @@ wiki.en.vec
 # *.json
 # *.xlsx
 # *.xls
+~$*.xlsx
+
 
 # Other generated files
 *.bak
