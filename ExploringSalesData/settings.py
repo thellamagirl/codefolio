@@ -3,6 +3,7 @@ import private
 HOST = ""
 USER = ""
 PASSWORD = ""
+DATABASE = ""
 
 try:
     from private import *
