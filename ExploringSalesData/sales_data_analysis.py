@@ -51,8 +51,8 @@ mycursor.execute("""
 """)
 
 # Read data from online_retail_II.xlsx - Contains 2 sheets: Year 2009-2010 and Year 2010-2011
-df_Y0910 = pd.read_excel("online_retail_II_Year 2009-2010", parse_dates=['InvoiceDate'])
-df_Y1011 = pd.read_excel("online_retail_II_Year 2010-2011", parse_dates=['InvoiceDate'])
+df_Y0910 = pd.read_excel('online_retail_II', sheet_name='Year 2009-2010', parse_dates=['InvoiceDate'])
+df_Y1011 = pd.read_excel('online_retail_II', sheet_name='Year 2010-2011', parse_dates=['InvoiceDate'])
 
 # Combine data into single df
 df_combined = pd.concat([df_Y0910, df_Y1011], ignore_index=True)
