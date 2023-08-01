@@ -169,3 +169,4 @@ mycursor.execute("""
 """)
 
 engine.close()
+mycursor.close()
