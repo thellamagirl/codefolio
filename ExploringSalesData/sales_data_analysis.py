@@ -37,8 +37,13 @@ mycursor.execute("""
 """)
 
 mycursor.execute("""
+    DROP TABLE IF EXISTS sales;
+""")
+
+mycursor.execute("""
     CREATE TABLE IF NOT EXISTS sales (
-        Invoice INT PRIMARY KEY,
+        ID INT PRIMARY KEY AUTO_INCREMENT,
+        Invoice INT,
         StockCode VARCHAR(50),
         Description VARCHAR(255),
         Quantity INT,
