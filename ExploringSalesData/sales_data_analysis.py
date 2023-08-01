@@ -22,6 +22,11 @@ mycursor.execute("USE salesdb")
 
 
 # Create tables
+
+# Create 'customers' table
+'''mycursor.execute("""
+    DROP TABLE IF EXISTS customers;
+""")'''
 mycursor.execute("""
     CREATE TABLE IF NOT EXISTS customers (
         CustomerID INT PRIMARY KEY, 
@@ -29,6 +34,10 @@ mycursor.execute("""
     );                 
 """)
 
+# Create 'products' table
+'''mycursor.execute("""
+    DROP TABLE IF EXISTS products;
+""")'''
 mycursor.execute("""
     CREATE TABLE IF NOT EXISTS products (
         StockCode VARCHAR(50) PRIMARY KEY,
@@ -36,9 +45,10 @@ mycursor.execute("""
     );
 """)
 
-mycursor.execute("""
+# Create 'sales' table
+'''mycursor.execute("""
     DROP TABLE IF EXISTS sales;
-""")
+""")'''
 
 mycursor.execute("""
     CREATE TABLE IF NOT EXISTS sales (
@@ -50,10 +60,24 @@ mycursor.execute("""
         InvoiceDate DATETIME,
         Price FLOAT,
         CustomerID INT,
-        Country VARCHAR(50),
-        FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID),
-        FOREIGN KEY (StockCode) REFERENCES products(StockCode)
+        Country VARCHAR(50)
+
     );
+""")
+#        FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID),
+#       FOREIGN KEY (StockCode) REFERENCES products(StockCode)
+
+# Truncate 'customers' table
+mycursor.execute("""
+    TRUNCATE TABLE customers;
+""")
+# Truncate 'products' table
+mycursor.execute("""
+    TRUNCATE TABLE products;
+""")
+# Truncate 'sales' table
+mycursor.execute("""
+    TRUNCATE TABLE sales;
 """)
 
 # Create Database Connection using SQLAlchemy with MySQL Connector backend
@@ -77,7 +101,7 @@ customers_column_mapping = {
 
 # Insert data into 'customers' table using column mapping
 df_customers = df_combined[['Customer ID', 'Country']]
-# Drop NA values from df
+# Drop NA values from df on 'Customer ID'
 df_customers = df_customers.dropna(subset=['Customer ID'])
 # Remove duplicate customers if needed
 df_customers.drop_duplicates(subset='Customer ID', inplace=True) 
@@ -97,6 +121,8 @@ products_column_mapping = {
 
 # Insert data into 'products' table using column mapping
 df_products = df_combined[['StockCode', 'Description']]
+# Drop NA values from df on 'StockCode'
+df_products = df_products.dropna(subset=['StockCode'])
 # Remove duplicate products if needed
 df_products.drop_duplicates(subset='StockCode', inplace=True)
 # Rename columns of df_products using products_column_mapping
@@ -127,3 +153,19 @@ df_sales.rename(columns=sales_column_mapping, inplace=True)
 # Convert to sql and insert into 'sales' table in 'salesdb' using SQLAlchemy engine
 df_sales.to_sql('sales', con=engine, if_exists='append', index=False)
 
+# Add foreign key constraints
+mycursor.execute("""
+    ALTER TABLE sales
+    ADD CONSTRAINT sales_ibfk_1
+    FOREIGN KEY (CustomerID)
+    REFERENCES customers (CustomerID)
+""")
+
+mycursor.execute("""
+    ALTER TABLE sales
+    ADD CONSTRAINT sales_ibfk_2
+    FOREIGN KEY (StockCode)
+    REFERENCES products (StockCode)
+""")
+
+engine.close()
