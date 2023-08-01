@@ -61,6 +61,9 @@ df_Y1011 = pd.read_excel('online_retail_II.xlsx', sheet_name='Year 2010-2011', p
 # Combine data into single df
 df_combined = pd.concat([df_Y0910, df_Y1011], ignore_index=True)
 
+# Ensure all alphanumeric StockCodes are uppercase
+df_combined['StockCode'] = df_combined['StockCode'].str.upper()
+
 # Column mapping df to 'customer' table
 customers_column_mapping = {
     'Customer ID': 'CustomerID',
@@ -69,8 +72,12 @@ customers_column_mapping = {
 
 # Insert data into 'customers' table using column mapping
 df_customers = df_combined[['Customer ID', 'Country']]
+# Drop NA values from df
+df_customers = df_customers.dropna(subset=['Customer ID'])
 # Remove duplicate customers if needed
 df_customers.drop_duplicates(subset='Customer ID', inplace=True) 
+
+
 # Rename columns of df_customers using customers_column_mapping
 df_customers.rename(columns=customers_column_mapping, inplace=True)
 
@@ -107,6 +114,8 @@ sales_column_mapping = {
 
 # Insert data into 'sales' table using column mapping
 df_sales = df_combined[['Invoice','StockCode', 'Description', 'Quantity', 'InvoiceDate', 'Price', 'Customer ID', 'Country']]
+# Drop NA values from df
+df_sales = df_sales.dropna(subset=['Customer ID'])
 # Rename columns of df_sales using sales_column_mapping
 df_sales.rename(columns=sales_column_mapping, inplace=True)
 
