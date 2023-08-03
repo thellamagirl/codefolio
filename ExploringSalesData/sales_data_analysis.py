@@ -61,11 +61,11 @@ mycursor.execute("""
         Price FLOAT,
         CustomerID INT,
         Country VARCHAR(50)
-
     );
 """)
-#        FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID),
-#       FOREIGN KEY (StockCode) REFERENCES products(StockCode)
+
+#FOREIGN KEY (CustomerID) REFERENCES customers(CustomerID),
+#FOREIGN KEY (StockCode) REFERENCES products(StockCode)
 
 # Truncate 'customers' table
 mycursor.execute("""
@@ -93,6 +93,12 @@ df_combined = pd.concat([df_Y0910, df_Y1011], ignore_index=True)
 # Ensure all alphanumeric StockCodes are uppercase
 df_combined['StockCode'] = df_combined['StockCode'].str.upper()
 
+'''# Drop rows with missing Customer IDs
+df_combined.dropna(subset=['Customer ID'], inplace=True)
+
+# Remove duplicate customers if needed
+df_combined.drop_duplicates(subset=['Customer ID'], inplace=True) 
+
 # Column mapping df to 'customer' table
 customers_column_mapping = {
     'Customer ID': 'CustomerID',
@@ -101,10 +107,11 @@ customers_column_mapping = {
 
 # Insert data into 'customers' table using column mapping
 df_customers = df_combined[['Customer ID', 'Country']]
+
 # Drop NA values from df on 'Customer ID'
-df_customers = df_customers.dropna(subset=['Customer ID'])
+#df_customers = df_customers.dropna(subset=['Customer ID'])
 # Remove duplicate customers if needed
-df_customers.drop_duplicates(subset='Customer ID', inplace=True) 
+#df_customers.drop_duplicates(subset='Customer ID', inplace=True) 
 
 
 # Rename columns of df_customers using customers_column_mapping
@@ -151,7 +158,7 @@ df_sales = df_sales.dropna(subset=['Customer ID'])
 df_sales.rename(columns=sales_column_mapping, inplace=True)
 
 # Convert to sql and insert into 'sales' table in 'salesdb' using SQLAlchemy engine
-df_sales.to_sql('sales', con=engine, if_exists='append', index=False)
+df_sales.to_sql('sales', con=engine, if_exists='append', index=False)'''
 
 # Add foreign key constraints
 mycursor.execute("""
@@ -170,3 +177,99 @@ mycursor.execute("""
 
 engine.close()
 mycursor.close()
+
+'''# Column mapping df to 'customer' table
+customers_column_mapping = {
+    'Customer ID': 'CustomerID',
+    'Country': 'Country'
+}
+
+# Insert data into 'customers' table using column mapping
+df_customers = df_combined[['Customer ID', 'Country']]
+# Drop NA values from df on 'Customer ID'
+df_customers = df_customers.dropna(subset=['Customer ID'])
+# Remove duplicate customers if needed
+df_customers.drop_duplicates(subset='Customer ID', inplace=True) 
+
+# Convert DataFrame to a list of tuples for batch insertion
+customers_data = [tuple(row) for row in df_customers.values]
+
+# Prepare the query to insert data into 'customers' table
+customer_insert_query = "INSERT INTO customers (CustomerID, Country) VALUES (%s, %s)"
+
+# Execute batch insertion
+mycursor.executemany(customer_insert_query, customers_data)
+salesdb.commit()
+
+# Column mapping df to 'products' table
+products_column_mapping = {
+    'StockCode': 'StockCode',
+    'Description': 'Description'
+}
+
+# Insert data into 'products' table using column mapping
+df_products = df_combined[['StockCode', 'Description']]
+# Drop NA values from df on 'StockCode'
+df_products = df_products.dropna(subset=['StockCode'])
+# Convert NaN values in the 'Description' column to None for batch insertion
+df_products['Description'] = df_products['Description'].where(pd.notna(df_products['Description']), None)
+# Remove duplicate products if needed
+df_products.drop_duplicates(subset='StockCode', inplace=True)
+
+# Convert DataFrame to a list of tuples for batch insertion
+products_data = [tuple(row) for row in df_products.values]
+
+# Prepare the query to insert data into 'products' table
+product_insert_query = "INSERT INTO products (StockCode, Description) VALUES (%s, %s)"
+
+# Execute batch insertion
+mycursor.executemany(product_insert_query, products_data)
+salesdb.commit()
+
+# Column mapping df to 'sales' table
+sales_column_mapping = {
+    'Invoice': 'Invoice',
+    'StockCode': 'StockCode',
+    'Description': 'Description',
+    'Quantity': 'Quantity',
+    'InvoiceDate': 'InvoiceDate',
+    'Price': 'Price',
+    'Customer ID': 'CustomerID',
+    'Country': 'Country'
+}
+
+# Insert data into 'sales' table using column mapping
+df_sales = df_combined[['Invoice','StockCode', 'Description', 'Quantity', 'InvoiceDate', 'Price', 'Customer ID', 'Country']]
+# Drop NA values from df
+df_sales = df_sales.dropna(subset=['Customer ID'])
+# Rename columns of df_sales using sales_column_mapping
+df_sales.rename(columns=sales_column_mapping, inplace=True)
+
+# Convert DataFrame to a list of tuples for batch insertion
+sales_data = [tuple(row) for row in df_sales.values]
+
+# Prepare the query to insert data into 'sales' table
+sales_insert_query = "INSERT INTO sales (Invoice, StockCode, Description, Quantity, InvoiceDate, Price, CustomerID, Country) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+
+# Execute batch insertion
+mycursor.executemany(sales_insert_query, sales_data)
+salesdb.commit()
+
+# Add foreign key constraints
+mycursor.execute("""
+    ALTER TABLE sales
+    ADD CONSTRAINT sales_ibfk_1
+    FOREIGN KEY (CustomerID)
+    REFERENCES customers (CustomerID)
+""")
+
+mycursor.execute("""
+    ALTER TABLE sales
+    ADD CONSTRAINT sales_ibfk_2
+    FOREIGN KEY (StockCode)
+    REFERENCES products (StockCode)
+""")
+
+# Close the database connection
+mycursor.close()
+salesdb.close()'''
