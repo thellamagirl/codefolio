@@ -93,6 +93,67 @@ df_combined = pd.concat([df_Y0910, df_Y1011], ignore_index=True)
 # Ensure all alphanumeric StockCodes are uppercase
 df_combined['StockCode'] = df_combined['StockCode'].str.upper()
 
+# Define function to process dataframe for each table
+def process_df(df, columns, na_columns, dup_columns, mapping, table_name, engine):
+    df = df[columns]
+    df = df.dropna(subset=na_columns)
+    df.drop_duplicates(subset=dup_columns, inplace=True)
+    df.rename(columns=mapping, inplace=True)
+    df.to_sql(table_name, con=engine, if_exists='append', index=False, chunk_size=250)
+    return df
+
+# Set variables for 'customer' table
+customers_columns = ['Customer ID', 'Country']
+customers_na_columns = ['Customer ID']
+customers_dup_columns = ['Customer ID']
+
+# Column mapping df to 'customer' table
+customers_column_mapping = {
+    'Customer ID': 'CustomerID',
+    'Country': 'Country'
+}
+
+# Populate 'customers' table from df
+df_customers = process_df(df_combined, customers_columns, customers_na_columns,
+                          customers_dup_columns, customers_column_mapping, 'customers', engine)
+
+# Set variables for 'products' table
+products_columns = ['StockCode', 'Description']
+products_na_columns = ['StockCode']
+products_dup_columns = ['StockCode']
+
+# Column mapping df to 'products' table
+products_column_mapping = {
+    'StockCode': 'StockCode',
+    'Description': 'Description'
+}
+
+# Populate 'products' table from df
+df_products = process_df(df_combined, products_columns, products_na_columns,
+                         products_dup_columns, products_column_mapping, 'products', engine)
+
+# Set variables for 'sales' table
+sales_columns = ['Invoice','StockCode', 'Description', 'Quantity', 'InvoiceDate',
+                 'Price', 'Customer ID', 'Country']
+sales_na_columns = ['Customer ID']
+sales_dup_columns = []
+
+# Column mapping df to 'sales' table
+sales_column_mapping = {
+    'Invoice': 'Invoice',
+    'StockCode': 'StockCode',
+    'Description': 'Description',
+    'Quantity': 'Quantity',
+    'InvoiceDate': 'InvoiceDate',
+    'Price': 'Price',
+    'Customer ID': 'CustomerID',
+    'Country': 'Country'
+}
+
+# Populate 'sales' table from df
+df_sales = process_df(df_combined, sales_columns, sales_na_columns, sales_dup_columns,
+                      sales_column_mapping, 'sales', engine)
+
 '''# Drop rows with missing Customer IDs
 df_combined.dropna(subset=['Customer ID'], inplace=True)
 
