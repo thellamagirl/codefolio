@@ -16,7 +16,7 @@ SwishStats: NBA Score Web Scraper and Analysis Tool is a Python-based web scrapi
 1. Clone the project repository to your local machine:
 
    ```bash
-   git clone https://github.com/thellamagirl/stunning-giggle/tree/main/WebScraping
+   git clone https://github.com/thellamagirl/codefolio/tree/main/Webscraping
    ``` 
 
 2. Navigate to the project directory:

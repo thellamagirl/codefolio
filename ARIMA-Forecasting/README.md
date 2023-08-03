@@ -35,7 +35,7 @@ For more information on installing the Anaconda Distribution and using Jupyter N
 1. Clone the project repository to your local machine:
 
    ```bash
-   git clone https://github.com/thellamagirl/stunning-giggle/tree/main/ARIMA-Forecasting
+   git clone https://github.com/thellamagirl/codefolio/tree/main/ARIMA-Forecasting
    ``` 
 
 2. Navigate to the project directory:
