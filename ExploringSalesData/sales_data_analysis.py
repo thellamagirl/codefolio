@@ -67,8 +67,10 @@ mycursor.execute("""
 engine = create_engine(f"mysql+mysqlconnector://{settings.USER}:{settings.PASSWORD}@{settings.HOST}/{settings.DATABASE}")
 
 # Read data from online_retail_II.xlsx - Contains 2 sheets: Year 2009-2010 and Year 2010-2011
-df_Y0910 = pd.read_excel('online_retail_II.xlsx', sheet_name='Year 2009-2010', parse_dates=['InvoiceDate'])
-df_Y1011 = pd.read_excel('online_retail_II.xlsx', sheet_name='Year 2010-2011', parse_dates=['InvoiceDate'])
+df_Y0910 = pd.read_excel('online_retail_II.xlsx', sheet_name='Year 2009-2010',
+                         parse_dates=['InvoiceDate'], dtype={'StockCode': str})
+df_Y1011 = pd.read_excel('online_retail_II.xlsx', sheet_name='Year 2010-2011',
+                         parse_dates=['InvoiceDate'], dtype={'StockCode': str})
 
 # Combine data into single df
 df_combined = pd.concat([df_Y0910, df_Y1011], ignore_index=True)
@@ -77,7 +79,7 @@ df_combined = pd.concat([df_Y0910, df_Y1011], ignore_index=True)
 df_combined['StockCode'] = df_combined['StockCode'].str.upper()
 
 # Define function to process dataframe for each table
-def process_df(df, columns, na_columns, dup_columns, mapping, table_name, engine, chunksize=250):
+def process_df(df, columns, na_columns, dup_columns, mapping, table_name, engine, chunksize=500):
     df = df[columns]
     df = df.dropna(subset=na_columns)
     if dup_columns:  # only drop duplicates if dup_columns is not empty
